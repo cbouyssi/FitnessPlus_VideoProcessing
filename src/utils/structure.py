@@ -1,6 +1,8 @@
-
-
-import cv2
+# class Person:
+#     def __init__(self, name, box, image):
+#         self.name = name
+#         self.box = box
+#         self.image = image
 
 class Person:
     def __init__(self, name, box, histo):
@@ -21,90 +23,8 @@ class Frame :
 
 
 class Person_v2:
-    def __init__(self, name,age, box,rgbHist=[],histmoy=[],index=0,index_moy=0):
+    def __init__(self, name, box, rgbHist=[],index=0):
         self.name = name
-        self.age=age
         self.box = box
         self.rgbHist = rgbHist
-        self.histmoy=histmoy
         self.index=index
-        self.index_moy=index_moy
-
-class Person_v3:
-    def __init__(self, name,age, box,rgbHist=[],histmoyface1=[],histmoyface2=[],index=0,index_moyface1=0,index_moyface2=0,choose_face1=True):
-        self.name = name
-        self.age=age
-        self.box = box
-        self.rgbHist = rgbHist
-        self.histmoyface1=histmoyface1
-        self.histmoyface2=histmoyface2
-
-        self.index=index
-        self.index_moyface1=index_moyface1
-        self.index_moyface2=index_moyface2
-        self.choose_face1=choose_face1
-
-    def updateHistfaces(self,current_hist):
-        color = ('b','g','r')
-        curs=0
-        if      self.choose_face1:
-
-            if len(self.histmoyface1)>0:
-                for rgbHist in self.histmoyface1:
-                    for i,col in enumerate(color):
-                        curs+= cv2.compareHist(current_hist[i], rgbHist[i], cv2.HISTCMP_CORREL)
-                curs=curs/len(self.histmoyface1)
-                print("Distance nouvel histo par rapport à histo face1 : ",curs)
-                if curs>2.8 :
-                    if len(self.histmoyface1)<3:
-                        self.histmoyface1.append(current_hist)
-                        self.index_moyface1+=1
-                    else :
-                        self.histmoyface1[(self.index_moyface1)%3]=current_hist
-                        self.index_moyface1+=1
-                    print("Update face1")
-                else :
-                    if len(self.histmoyface2)<3:
-                        self.histmoyface2.append(current_hist)
-                        self.index_moyface2+=1
-                    else :
-                        self.histmoyface2[(self.index_moyface2)%3]=current_hist
-                        self.index_moyface2+=1
-                    self.choose_face1=False
-                    print("Update face2")
-            else :
-                if len(self.histmoyface1)<3:
-                    self.histmoyface1.append(current_hist)
-                    self.index_moyface1+=1
-                else :
-                    self.histmoyface2[(self.index_moyface1)%3]=current_hist
-                    self.index_moyface1+=1
-                print("Update face1")
-
-        else :
-            if len(self.histmoyface2)>0:
-                for rgbHist in self.histmoyface2:
-                    for i,col in enumerate(color):
-                        curs+= cv2.compareHist(current_hist[i], rgbHist[i], cv2.HISTCMP_CORREL)
-                curs=curs/len(self.histmoyface2)
-                print("Distance nouvel histo par rapport à histo face2: ",curs)
-                if curs>2.8 :
-                    if len(self.histmoyface2)<3:
-                        self.histmoyface2.append(current_hist)
-                        self.index_moyface2+=1
-                    else :
-                        self.histmoyface2[(self.index_moyface2)%3]=current_hist
-                        self.index_moyface2+=1
-                    print("Update face2")
-                else :
-                    if len(self.histmoyface1)<3:
-                        self.histmoyface1.append(current_hist)
-                        self.index_moyface1+=1
-                    else :
-                        self.histmoyface1[(self.index_moyface1)%3]=current_hist
-                        self.index_moyface1+=1
-                    self.choose_face1=True
-                    print("Update face1")
-            else :
-
-                    print("Bug")

@@ -5,7 +5,6 @@ import colorsys
 import imghdr
 import os
 import random
-from math import sqrt
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -16,10 +15,10 @@ import cv2
 from PIL import Image, ImageDraw, ImageFont
 
 from yad2k.models.keras_yolo import yolo_eval, yolo_head
+from src.utils.utils  import natural_keys
 
-from src.utils.utils import natural_keys
-from src.utils.structure import Person_v2, Person_v3
-from src.utils.tracking_v2 import updatePersons,plot_histo, color_tracking_v2,process_metrics_v2,color_moy_tracking,box_intersection_with_object
+from src.utils.structure import Person_v2
+from src.utils.tracking import updatePersons,plot_histo, color_tracking_v2,process_metrics_v2
 
 
 '''
@@ -28,12 +27,12 @@ Si 2 box n'ont pas assez d'intersection entre elles alors => 2 box
 Plus iou eleve plus il faut d'intersection pour que les box soient fusionnes
 '''
 
-def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
+def model_prediction_person(score_threshold=0.2,iou_threshold=0.2):
     model_path = os.path.expanduser('model_data/yolo.h5')
     anchors_path = os.path.expanduser('model_data/yolo_anchors.txt')
     classes_path = os.path.expanduser('model_data/coco_classes.txt')
-    test_path = os.path.expanduser('data/frames_full_vid')
-    output_path = os.path.expanduser('data/frames_out')
+    test_path = os.path.expanduser('data/frames_vid_tom')
+    output_path = os.path.expanduser('data/frames_vid_out_tom_v2')
 
 
     if not os.path.exists(output_path):
@@ -106,10 +105,16 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
             continue
 
         image = Image.open(os.path.join(test_path, image_file))
+        print("IMAGE SIZE : ",image.size)
+
 
         if is_fixed_size:  # TODO: When resizing we can use minibatch input.
             resized_image = image.resize(
                 tuple(reversed(model_image_size)), Image.BICUBIC)
+            print("model_image_size : ",model_image_size)
+            print("Image.BICUBIC",Image.BICUBIC)
+            print("IMAGE SIZE : ",resized_image.size)
+
             image_data = np.array(resized_image, dtype='float32')
         else:
             # Due to skip connection + max pooling in YOLO_v2, inputs must have
@@ -128,11 +133,6 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
         image_frame /= 255.
         image_data = np.expand_dims(image_data, 0)  # Add batch dimension.
 
-        distance_normalizer=sqrt(pow(image_frame.shape[0]-0,2)+pow(image_frame.shape[1]-0,2))
-        # print("distance_normalizer :",distance_normalizer)
-        # print("normalized 50 =>",50/distance_normalizer)
-        # print("normalized 100 =>",100/distance_normalizer)
-
 
         out_boxes, out_scores, out_classes = sess.run(
             [boxes, scores, classes],
@@ -141,7 +141,7 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 input_image_shape: [image.size[1], image.size[0]],
                 K.learning_phase(): 0
             })
-        print('\nFound {} boxes for {}'.format(len(out_boxes), image_file))
+        print('Found {} boxes for {}'.format(len(out_boxes), image_file))
 
         font = ImageFont.truetype(
             font='font/FiraMono-Medium.otf',
@@ -157,10 +157,7 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 score = out_scores[i]
                 histr=[]
 
-                boolean_intersection=box_intersection_with_object(box,i,out_classes,out_boxes)
-                print("Current user intersection with another object : ",boolean_intersection)
 
-                # reshape bounding box into the image border
                 x_top,y_left,x_bottom,y_right=box
                 x_top = max(0,x_top)
                 y_left = max(0, y_left)
@@ -173,16 +170,13 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
 
 
                 # plot_histo(histr)
-                rgbHist=[]
-                moyhistface1=[]
-                moyhistface2=[]
+
+
+
                 if comp==0 :
-
-
+                    rgbHist=[]
                     rgbHist.append(histr)
-                    moyhistface1.append(histr)
-                    person=Person_v3("person"+ str(id),comp,box,rgbHist, moyhistface1,moyhistface2,1,1,0)
-
+                    person=Person_v2("person"+ str(id),box, rgbHist)
                     persons[person.name]=person
                     print("NEW USER WELCOM =>",person.name)
 
@@ -190,28 +184,23 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 else :
                     print("\n TRACKING COMPUTATION  CURRENT USER",comp_p)
                     dico_histo = color_tracking_v2(histr,persons)
-                    print("\n TRACKING COMPUTATION HISTO MOY ============================> CURRENT USER",comp_p)
-                    dico_hist_moy=color_moy_tracking(histr,persons)
 
                     print("\nPROCESS METRICS SELECTION CURRENT USER",comp_p)
-                    # name=process_metrics_v2(dico_histo,box,histr,persons,comp,distance_normalizer)
-                    name,boolean_redecouverte,key_to_delete=process_metrics_v2(dico_hist_moy,dico_histo,box,histr,persons,comp,distance_normalizer)
+                    name=process_metrics_v2(dico_histo,comp)
 
                     if name=="default":
                         print("NEW USER WELCOM =>","person"+ str(id))
+                        rgbHist=[]
                         rgbHist.append(histr)
-                        moyhistface1.append(histr)
-                        person=Person_v3("person"+ str(id),comp,box,rgbHist, moyhistface1,moyhistface2,1,1,0)
+                        person=Person_v2("person"+ str(id),box, rgbHist)
                         persons[person.name]=person
                         id+=1
                     else :
 
-                        persons=updatePersons(name,box,histr,persons,boolean_intersection,boolean_redecouverte)
-                        if boolean_redecouverte and key_to_delete!="default":
-                            print("Je vais supprimer :",key_to_delete)
-                            persons.pop(key_to_delete)
+                        persons=updatePersons(name,histr,persons)
                         # inutile la ligne du dessus est suffisante mais pour le display des bounding box j'en ai besoin
-                        person=Person_v2(name,comp,box, rgbHist)
+                        person=Person_v2(name,box, rgbHist)
+
 
                 #before tracking
                 # label = '{} {:.2f}'.format(predicted_class, score)
@@ -246,11 +235,5 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
 
 
         comp+=1
-        # que du print
-        for key , person in persons.items():
-            print(person.name ,len(person.histmoyface1),len(person.histmoyface2))
-        print('Found {} boxes for {}'.format(len(out_boxes), image_file))
-        # text = input("pause")
-
 
     sess.close()
