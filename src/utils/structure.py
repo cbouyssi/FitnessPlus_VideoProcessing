@@ -108,3 +108,27 @@ class Person_v3:
             else :
 
                     print("Bug")
+
+class Machine:
+    def __init__(self, name, boxMachine=[]):
+        self.name = name
+        self.box = boxMachine
+        self.totalUsedTime = 0
+        self.currentUsedTime = {}
+        self.isUsed = False
+
+    def updateTime(self, machineUsed, userName):
+        if machineUsed:
+            if userName in self.currentUsedTime.keys():
+                self.currentUsedTime[userName] += 1
+        else :
+            self.currentUsedTime.pop(userName)
+
+
+    def isMachineUsed(self):
+
+        for k,v in self.currentUsedTime.items():
+            if v > 2 :
+                self.isUsed = True
+
+        return

@@ -18,8 +18,9 @@ from PIL import Image, ImageDraw, ImageFont
 from yad2k.models.keras_yolo import yolo_eval, yolo_head
 
 from src.utils.utils import natural_keys
-from src.utils.structure import Person_v2, Person_v3
+from src.utils.structure import Person_v2, Person_v3, Machine
 from src.utils.tracking_v2 import updatePersons,plot_histo, color_tracking_v2,process_metrics_v2,color_moy_tracking,box_intersection_with_object
+from src.utils.monitoringSalle import usedMachine, printMachineState
 
 
 '''
@@ -28,7 +29,14 @@ Si 2 box n'ont pas assez d'intersection entre elles alors => 2 box
 Plus iou eleve plus il faut d'intersection pour que les box soient fusionnes
 '''
 
+
 def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
+
+    #Machines initialization
+    machines = []
+    dc = Machine("dc", [0, 0, 400, 1000])
+    machines.append(dc)
+
     model_path = os.path.expanduser('model_data/yolo.h5')
     anchors_path = os.path.expanduser('model_data/yolo_anchors.txt')
     classes_path = os.path.expanduser('model_data/coco_classes.txt')
@@ -155,6 +163,14 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 predicted_class = class_names[c]
                 box = out_boxes[i]
                 score = out_scores[i]
+
+                if comp %30 == 0:
+                    machines = usedMachine(box, machines)
+
+
+
+
+
                 histr=[]
 
                 boolean_intersection=box_intersection_with_object(box,i,out_classes,out_boxes)
@@ -252,5 +268,5 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
         print('Found {} boxes for {}'.format(len(out_boxes), image_file))
         # text = input("pause")
 
-
+        printMachineState(machines)
     sess.close()
