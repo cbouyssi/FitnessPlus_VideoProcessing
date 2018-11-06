@@ -118,17 +118,25 @@ class Machine:
         self.isUsed = False
 
     def updateTime(self, machineUsed, userName):
+        # print("machineUsed",machineUsed)
         if machineUsed:
             if userName in self.currentUsedTime.keys():
                 self.currentUsedTime[userName] += 1
+            else :
+                self.currentUsedTime[userName] = 1
+            print(userName,self.currentUsedTime[userName])
         else :
-            self.currentUsedTime.pop(userName)
+            if userName in self.currentUsedTime.keys():
+                self.currentUsedTime.pop(userName)
 
 
     def isMachineUsed(self):
-
+        b=self.isUsed
+        self.isUsed=False
         for k,v in self.currentUsedTime.items():
             if v > 2 :
-                self.isUsed = True
-
-        return
+                if b==False :
+                    self.totalUsedTime+=v
+                    self.isUsed = True
+                else :
+                    self.totalUsedTime+=1

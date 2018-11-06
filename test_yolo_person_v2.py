@@ -20,7 +20,7 @@ from yad2k.models.keras_yolo import yolo_eval, yolo_head
 from src.utils.utils import natural_keys
 from src.utils.structure import Person_v2, Person_v3, Machine
 from src.utils.tracking_v2 import updatePersons,plot_histo, color_tracking_v2,process_metrics_v2,color_moy_tracking,box_intersection_with_object
-from src.utils.monitoringSalle import usedMachine, printMachineState
+from src.utils.monitoringSalle import updateTimeMachine, printMachineState,usedMachine
 
 
 '''
@@ -34,14 +34,14 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
 
     #Machines initialization
     machines = []
-    dc = Machine("dc", [0, 0, 400, 1000])
+    dc = Machine("dc", [0, 400, 300, 1200])
     machines.append(dc)
 
     model_path = os.path.expanduser('model_data/yolo.h5')
     anchors_path = os.path.expanduser('model_data/yolo_anchors.txt')
     classes_path = os.path.expanduser('model_data/coco_classes.txt')
-    test_path = os.path.expanduser('data/frames_full_vid')
-    output_path = os.path.expanduser('data/frames_out')
+    test_path = os.path.expanduser('data/frames_vid_tom')
+    output_path = os.path.expanduser('data/frames_out_tom_v3')
 
 
     if not os.path.exists(output_path):
@@ -164,11 +164,6 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 box = out_boxes[i]
                 score = out_scores[i]
 
-                if comp %30 == 0:
-                    machines = usedMachine(box, machines)
-
-
-
 
 
                 histr=[]
@@ -228,6 +223,9 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                             persons.pop(key_to_delete)
                         # inutile la ligne du dessus est suffisante mais pour le display des bounding box j'en ai besoin
                         person=Person_v2(name,comp,box, rgbHist)
+                print(person.box)
+                if comp % 1== 0: #faut mettre 30 pour de vrai
+                    machines = updateTimeMachine(person, machines)
 
                 #before tracking
                 # label = '{} {:.2f}'.format(predicted_class, score)
@@ -235,7 +233,8 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 draw = ImageDraw.Draw(image)
                 label_size = draw.textsize(label, font)
 
-                top, left, bottom, right = box
+                top, left, bottom, right =box
+                # top, left, bottom, right =  [0, 0, 400, 800]
                 top = max(0, np.floor(top + 0.5).astype('int32'))
                 left = max(0, np.floor(left + 0.5).astype('int32'))
                 bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
@@ -259,14 +258,16 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
         output_path=output_path+"/"
         image.save(os.path.expanduser(output_path+ image_file),"PNG", quality=90)
 
-
+        machines=usedMachine(machines)
 
         comp+=1
         # que du print
-        for key , person in persons.items():
-            print(person.name ,len(person.histmoyface1),len(person.histmoyface2))
+        # for key , person in persons.items():
+        #     print(person.name ,len(person.histmoyface1),len(person.histmoyface2))
         print('Found {} boxes for {}'.format(len(out_boxes), image_file))
-        # text = input("pause")
-
         printMachineState(machines)
+
+        text = input("pause")
+
+
     sess.close()

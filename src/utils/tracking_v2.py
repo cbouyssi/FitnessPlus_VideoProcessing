@@ -39,6 +39,9 @@ def bb_intersection(boxA, boxB):
 	# compute the area of both the prediction and ground-truth
 	# rectangles
 	boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+	# print(xA,yA,xB,yB)
+	# print("interArea :",interArea)
+	# print("boxAArea :",boxAArea)
 
 	# compute the intersection over union by taking the intersection
 	# area and dividing it by the sum of prediction + ground-truth
