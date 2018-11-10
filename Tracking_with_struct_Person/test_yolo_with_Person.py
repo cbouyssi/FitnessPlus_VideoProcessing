@@ -18,8 +18,9 @@ from PIL import Image, ImageDraw, ImageFont
 from yad2k.models.keras_yolo import yolo_eval, yolo_head
 
 from src.utils.utils import natural_keys
-from src.utils.structure import Person_v2, Person_v3
-from src.utils.tracking_v2 import updatePersons,plot_histo, color_tracking_v2,process_metrics_v2,color_moy_tracking,box_intersection_with_object
+from src.utils.structure import Person, Machine
+from src.utils.tracking_Person import updatePersons,plot_histo, color_tracking_v2,process_metrics_v2,box_intersection_with_object,resize_bouding_box
+from src.utils.monitoringSalle import updateTimeMachine, printMachineState,usedMachine
 
 
 '''
@@ -28,12 +29,22 @@ Si 2 box n'ont pas assez d'intersection entre elles alors => 2 box
 Plus iou eleve plus il faut d'intersection pour que les box soient fusionnes
 '''
 
-def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
+
+def model_prediction_with_Person(score_threshold=0.5,iou_threshold=0.2):
+
+    #Machines initialization
+    machines = []
+    traction = Machine("Traction", [105, 129, 285, 207])
+    bench = Machine("Bench", [155, 227, 272, 267])
+    machines.append(traction)
+    machines.append(bench)
+
     model_path = os.path.expanduser('model_data/yolo.h5')
     anchors_path = os.path.expanduser('model_data/yolo_anchors.txt')
     classes_path = os.path.expanduser('model_data/coco_classes.txt')
-    test_path = os.path.expanduser('data/frames_full_vid')
-    output_path = os.path.expanduser('data/frames_out')
+    test_path = os.path.expanduser('data/frames_vid_salle_insa')
+    output_path = os.path.expanduser('data/frames_vid_salle_insa_160_with_Person_out')
+    output_path=output_path+"/"
 
 
     if not os.path.exists(output_path):
@@ -155,6 +166,9 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 predicted_class = class_names[c]
                 box = out_boxes[i]
                 score = out_scores[i]
+
+
+
                 histr=[]
 
                 boolean_intersection=box_intersection_with_object(box,i,out_classes,out_boxes)
@@ -167,21 +181,20 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 x_bottom = min( x_bottom,image_frame.shape[0])
                 y_right = min( y_right,image_frame.shape[1])
                 box =x_top,y_left,x_bottom,y_right
+                box=resize_bouding_box(box)
                 color = ('b','g','r')
+
                 for i,col in enumerate(color):
                 	histr.append( cv2.calcHist([image_frame[int(box[0]):int(box[2]), int(box[1]):int(box[3])]],[i],None,[256],[0,1]))
 
 
                 # plot_histo(histr)
                 rgbHist=[]
-                moyhistface1=[]
-                moyhistface2=[]
                 if comp==0 :
 
 
                     rgbHist.append(histr)
-                    moyhistface1.append(histr)
-                    person=Person_v3("person"+ str(id),comp,box,rgbHist, moyhistface1,moyhistface2,1,1,0)
+                    person=Person("person"+ str(id),comp,box,rgbHist,0)
 
                     persons[person.name]=person
                     print("NEW USER WELCOM =>",person.name)
@@ -190,28 +203,29 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 else :
                     print("\n TRACKING COMPUTATION  CURRENT USER",comp_p)
                     dico_histo = color_tracking_v2(histr,persons)
-                    print("\n TRACKING COMPUTATION HISTO MOY ============================> CURRENT USER",comp_p)
-                    dico_hist_moy=color_moy_tracking(histr,persons)
-
                     print("\nPROCESS METRICS SELECTION CURRENT USER",comp_p)
                     # name=process_metrics_v2(dico_histo,box,histr,persons,comp,distance_normalizer)
-                    name,boolean_redecouverte,key_to_delete=process_metrics_v2(dico_hist_moy,dico_histo,box,histr,persons,comp,distance_normalizer)
+                    name,boolean_redecouverte,key_to_delete,boolena_ressemble_bcp=process_metrics_v2(dico_histo,box,histr,persons,comp,distance_normalizer)
 
                     if name=="default":
                         print("NEW USER WELCOM =>","person"+ str(id))
                         rgbHist.append(histr)
-                        moyhistface1.append(histr)
-                        person=Person_v3("person"+ str(id),comp,box,rgbHist, moyhistface1,moyhistface2,1,1,0)
+                        person=Person("person"+ str(id),comp,box,rgbHist,0)
                         persons[person.name]=person
                         id+=1
                     else :
-
-                        persons=updatePersons(name,box,histr,persons,boolean_intersection,boolean_redecouverte)
+                        persons=updatePersons(name,box,histr,persons,boolean_intersection,boolean_redecouverte,boolena_ressemble_bcp)
                         if boolean_redecouverte and key_to_delete!="default":
                             print("Je vais supprimer :",key_to_delete)
                             persons.pop(key_to_delete)
                         # inutile la ligne du dessus est suffisante mais pour le display des bounding box j'en ai besoin
-                        person=Person_v2(name,comp,box, rgbHist)
+                        person=Person(name,comp,box, rgbHist)
+
+
+                print(person.box)
+
+                if comp  % 30== 0: #faut mettre 30 pour de vrai
+                    machines = updateTimeMachine(person, machines)
 
                 #before tracking
                 # label = '{} {:.2f}'.format(predicted_class, score)
@@ -219,7 +233,8 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                 draw = ImageDraw.Draw(image)
                 label_size = draw.textsize(label, font)
 
-                top, left, bottom, right = box
+                top, left, bottom, right =box
+                # top, left, bottom, right =  [0, 0, 400, 800]
                 top = max(0, np.floor(top + 0.5).astype('int32'))
                 left = max(0, np.floor(left + 0.5).astype('int32'))
                 bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
@@ -240,16 +255,60 @@ def model_prediction_person_v2(score_threshold=0.2,iou_threshold=0.2):
                     fill=colors[c])
                 draw.text(text_origin, label, fill=(0, 0, 0), font=font)
                 del draw
-        output_path=output_path+"/"
-        image.save(os.path.expanduser(output_path+ image_file),"PNG", quality=90)
 
+
+
+        if comp % 30== 0: #faut mettre 30 pour de vrai
+            machines=usedMachine(machines)
+
+        # draw machine
+        machine=machines[0]
+        label = '{} {} '.format(machine.name,machine.isUsed)
+        draw = ImageDraw.Draw(image)
+        label_size = draw.textsize(label, font)
+
+        top, left, bottom, right =machine.box
+        # top, left, bottom, right =  [0, 0, 400, 800]
+        top = max(0, np.floor(top + 0.5).astype('int32'))
+        left = max(0, np.floor(left + 0.5).astype('int32'))
+        bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
+        right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+
+        if top - label_size[1] >= 0:
+            text_origin = np.array([left, top - label_size[1]])
+        else:
+            text_origin = np.array([left, top + 1])
+
+        if machine.isUsed==True :
+            c=1
+        else :
+            c=2
+
+        # My kingdom for a good redistributable image drawing library.
+        for i in range(thickness):
+            draw.rectangle(
+                [left + i, top + i, right - i, bottom - i],
+                outline=colors[c])
+        draw.rectangle(
+            [tuple(text_origin), tuple(text_origin + label_size)],
+            fill=colors[c])
+        draw.text(text_origin, label, fill=(0, 0, 0), font=font)
+        del draw
+
+
+
+        print("output_path :",output_path)
+        print("image_file : ",image_file)
+        image.save(os.path.expanduser(output_path+ image_file),"PNG", quality=90)
 
 
         comp+=1
         # que du print
-        for key , person in persons.items():
-            print(person.name ,len(person.histmoyface1),len(person.histmoyface2))
+        # for key , person in persons.items():
+        #     print(person.name ,len(person.histmoyface1),len(person.histmoyface2))
         print('Found {} boxes for {}'.format(len(out_boxes), image_file))
+        printMachineState(machines)
+
         # text = input("pause")
 
 

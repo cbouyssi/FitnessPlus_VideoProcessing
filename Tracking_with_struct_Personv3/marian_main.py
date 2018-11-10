@@ -11,9 +11,10 @@ import glob
 from shutil import copyfile
 from keras.models import Model, load_model
 from src.yolov2.yolo_utils import decode_predictions
-from src.utils.utils import save_object, open_object, make_clean, vid_to_frames
+from src.utils.utils import save_object, open_object, make_clean, vid_to_frames,\
+                            file_to_categories, atof,natural_keys
+from test_yolo import model_prediction_framing
 from test_yolo_person import model_prediction_person
-from test_yolo_person_v2 import model_prediction_person_v2
 
 
 
@@ -51,7 +52,7 @@ if __name__ == '__main__':
     #models_path = 'config/models/'
     models_path=os.path.expanduser("model_data/yolo.h5")
     # frames_path = 'data/frames_full_vid/'
-    frames_path = 'data/frames_vid_italie/'
+    frames_path = 'data/frames_vid_tom/'
     savings_path = 'data/saved_variables/'
 
 
@@ -71,4 +72,4 @@ if __name__ == '__main__':
         # save_object(int(fps), savings_path+'fps.pkl')
 
     # model_prediction_framing()
-    model_prediction_person_v2()
+    model_prediction_person()

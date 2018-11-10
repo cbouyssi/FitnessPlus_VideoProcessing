@@ -87,7 +87,7 @@ def vid_to_frames(vid_path, frames_path, idx):
     else :
         vidcap.open()
     fps = vidcap.get(cv2.CAP_PROP_FPS)
-    fps /= fps
+    fps /= 5
     '''
     J'arrondis fps sinon je vois pas comment le modulo fps peux marcher
     '''
