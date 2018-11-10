@@ -34,8 +34,10 @@ def model_prediction_with_Person(score_threshold=0.5,iou_threshold=0.2):
 
     #Machines initialization
     machines = []
-    dc = Machine("Traction is used : ", [105, 129, 285, 207])
-    machines.append(dc)
+    traction = Machine("Traction", [105, 129, 285, 207])
+    bench = Machine("Bench", [155, 227, 272, 267])
+    machines.append(traction)
+    machines.append(bench)
 
     model_path = os.path.expanduser('model_data/yolo.h5')
     anchors_path = os.path.expanduser('model_data/yolo_anchors.txt')
