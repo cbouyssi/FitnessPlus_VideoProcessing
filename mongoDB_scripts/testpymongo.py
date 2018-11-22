@@ -3,8 +3,14 @@ from datetime import datetime, timedelta
 
 
 dicoExerciceCalorie={
+    "Pompe":6.7/60,
+    "Traction":9.2/60,
     "pompe":6.7/60,
     "traction":9.2/60
+    }
+dicoNameUserToIdFirebase={
+    "person0":"a",
+    "person1":"b"
     }
 
 def countSerieExercice(typeExercice,idUser):
@@ -51,13 +57,36 @@ def addExercice(idUser,typeExercice, time):
           }
     collectionExercice.insert_one(exercice).inserted_id
 
+def addExerciceWithNameUser(nameUser,typeExercice, time):
+    print("testpymongo : name user :",nameUser)
+    client = pymongo.MongoClient()
+    collectionExercice = client.test.excercice
+    collectionUser = client.test.user
+
+    res=collectionUser.find_one({"name":nameUser})
+    if res==None :
+        idUser=dicoNameUserToIdFirebase[nameUser]
+        addUser(nameUser,idUser)
+    else :
+        idUser=res["id_firebase"]
+
+    exercice = {
+         "id_firebase": idUser,
+         "type":typeExercice,
+         "time":time,
+          "date": datetime.utcnow()
+          }
+    collectionExercice.insert_one(exercice).inserted_id
+
 def addUser(name , idFirebase):
+    client = pymongo.MongoClient()
+
     newPerson =  {
         "name": name,
         "id_firebase": idFirebase}
 
     collectionUser = client.test.user
-    idUser=collectionUser.insert_one(newPerson).inserted_id
+    idUser=collectionUser.insert_one(newPerson)
 
 def getClientMongoDB():
     return  pymongo.MongoClient()
@@ -86,7 +115,7 @@ def outLastDayUserSeance():
 
     out.close()
 
-def outStatisticUsers(deltaTime):
+def outStatisticUsers():
     out=open("out_statistic_user.txt","w+")
     collectionUser = client.test.user
 
@@ -110,6 +139,15 @@ if __name__ == "__main__":
     client = pymongo.MongoClient()
     names=client.database_names()
     print(names)
+    # pour clear la BD
+    # client.test.user.remove()
+    # client.test.excercice.remove()
+
+
+
+    collectionUser = client.test.user
+    for user in collectionUser.find():
+        print(user["id_firebase"])
     # addUser("cesar","kkk")
     # addExercice("kkk","pompe",89)
     # countSerieExercice("traction","kkk")
