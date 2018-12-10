@@ -1,0 +1,66 @@
+user
+id:4xNimtwggkX0lugJtWOaMrZAsPF3
+date:2018-11-22 00:00:00
+calories:38.63166666666667
+time:337
+traction:12
+pompe:112
+traction:12
+pompe:112
+pompe:89
+user
+id:4xNimtwggkX0lugJtWOaMrZAsPF3
+date:2018-11-22 00:00:00
+calories:38.63166666666667
+time:337
+traction:12
+pompe:112
+traction:12
+pompe:112
+pompe:89
+user
+id:4xNimtwggkX0lugJtWOaMrZAsPF3
+date:2018-11-22 00:00:00
+calories:38.63166666666667
+time:337
+traction:12
+pompe:112
+traction:12
+pompe:112
+pompe:89
+user
+id:4xNimtwggkX0lugJtWOaMrZAsPF3
+date:2018-11-22 00:00:00
+calorie:38.63166666666667
+time:337
+traction:12
+pompe:112
+traction:12
+pompe:112
+pompe:89
+user
+id:4xNimtwggkX0lugJtWOaMrZAsPF3
+date:2018-11-22 00:00:00
+calories:38.63166666666667
+time:337
+traction:12
+pompe:112
+traction:12
+pompe:112
+pompe:89
+user
+id:4xNimtwggkX0lugJtWOaMrZAsPF3
+date:2018-11-22 00:00:00
+calories:38.63166666666667
+time:337
+traction:12
+pompe:112
+traction:12
+pompe:112
+pompe:89
+user
+id:kkk
+date:2018-11-22 00:00:00
+calories:9.938333333333333
+time:89
+pompe:89
