@@ -28,23 +28,23 @@ require("firebase/functions");
 // Comment out (or don't require) services that you don't want to use
 // require("firebase/storage");
 
-// var config = {
-//     apiKey: "AIzaSyDzguNzHKKqO_PSgqoi27z0QFM7F-KEF08",
-//     authDomain: "fitnessplus-906a5.firebaseapp.com",
-//     databaseURL: "https://fitnessplus-906a5.firebaseio.com",
-//     projectId: "fitnessplus-906a5",
-//     storageBucket: "fitnessplus-906a5.appspot.com",
-//     messagingSenderId: "105815338880"
-//   };
-
 var config = {
-    apiKey: "AIzaSyDNGWn0ojvG0jx_KYGLiBr97UeMsY-C2VM",
-    authDomain: "marian-168608.firebaseapp.com",
-    databaseURL: "https://marian-168608.firebaseio.com",
-    projectId: "marian-168608",
-    storageBucket: "marian-168608.appspot.com",
-    messagingSenderId: "468550901883"
+    apiKey: "AIzaSyDzguNzHKKqO_PSgqoi27z0QFM7F-KEF08",
+    authDomain: "fitnessplus-906a5.firebaseapp.com",
+    databaseURL: "https://fitnessplus-906a5.firebaseio.com",
+    projectId: "fitnessplus-906a5",
+    storageBucket: "fitnessplus-906a5.appspot.com",
+    messagingSenderId: "105815338880"
   };
+
+// var config = {
+//     apiKey: "AIzaSyDNGWn0ojvG0jx_KYGLiBr97UeMsY-C2VM",
+//     authDomain: "marian-168608.firebaseapp.com",
+//     databaseURL: "https://marian-168608.firebaseio.com",
+//     projectId: "marian-168608",
+//     storageBucket: "marian-168608.appspot.com",
+//     messagingSenderId: "468550901883"
+//   };
 firebase.initializeApp(config);
 
 function getDateTime(date) {

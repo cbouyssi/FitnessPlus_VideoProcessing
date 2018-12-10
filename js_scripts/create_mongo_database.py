@@ -47,51 +47,51 @@ def createDatabase():
     addUser(clientCollection,"person0","aaa")
     addUser(clientCollection,"cesar","op2jBYRJKHde6Brk2Obbar1sisi2")
     date =  datetime(2018, 11, 30)
-    addExercice(clientCollection,"aaa","pompe",32,date)
-    addExercice(clientCollection,"aaa","pompe",25,date)
-    addExercice(clientCollection,"aaa","nothing",224,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",194,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",224,date)
+    addExercice(clientCollection,"aaa","pompe",32,date,11)
+    addExercice(clientCollection,"aaa","pompe",25,date,7)
+    addExercice(clientCollection,"aaa","nothing",224,date,5)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",194,date,11)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",224,date,5)
     date =  datetime(2018, 11, 29)
-    addExercice(clientCollection,"aaa","traction",32,date)
-    addExercice(clientCollection,"aaa","traction",25,date)
-    addExercice(clientCollection,"aaa","nothing",120,date)
+    addExercice(clientCollection,"aaa","traction",32,date,14)
+    addExercice(clientCollection,"aaa","traction",25,date,12)
+    addExercice(clientCollection,"aaa","nothing",120,date,5)
 
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",194,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",194,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",520,date)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",194,date,12)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",194,date,3)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",520,date,6)
 
     date =  datetime(2018, 11, 27)
-    addExercice(clientCollection,"aaa","pompe",82,date)
-    addExercice(clientCollection,"aaa","pompe",35,date)
-    addExercice(clientCollection,"aaa","nothing",200,date)
+    addExercice(clientCollection,"aaa","pompe",82,date,7)
+    addExercice(clientCollection,"aaa","pompe",35,date,8)
+    addExercice(clientCollection,"aaa","nothing",200,date,10)
 
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",300,date)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",94,date,10)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,10)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",300,date,10)
 
     date =  datetime(2018, 11, 26)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",52,date)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date,10)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,10)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",52,date,10)
 
     date =  datetime(2018, 11, 25)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",700,date)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date,12)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,11)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date,11)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,12)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date,13)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,14)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",700,date,7)
 
     date =  datetime(2018, 11, 24)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date)
-    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",652,date)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",94,date,7)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",54,date,12)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","pompe",94,date,1)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,4)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",94,date,5)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","traction",54,date,6)
+    addExercice(clientCollection,"op2jBYRJKHde6Brk2Obbar1sisi2","nothing",652,date,8)
 
 
 
@@ -146,17 +146,18 @@ def addSalle(clientCollection,name, nbUser):
         }
     collectionSalles.insert_one(salle).inserted_id
 
-def addExercice(clientCollection,idUser,typeExercice, time,date):
+def addExercice(clientCollection,idUser,typeExercice, time,date,nbRepetition):
     collectionExercice = clientCollection.excercice
     exercice = {
          "id_firebase": idUser,
          "type":typeExercice,
          "time":time,
+         "nbRepetition":nbRepetition,
           "date": date
           }
     collectionExercice.insert_one(exercice).inserted_id
 
-def addExerciceWithNameUser(nameUser,typeExercice, time):
+def addExerciceWithNameUser(nameUser,typeExercice, time,nbRepetition):
     print("testpymongo : name user :",nameUser)
     client = pymongo.MongoClient()
     collectionExercice = client.test.excercice
@@ -173,6 +174,7 @@ def addExerciceWithNameUser(nameUser,typeExercice, time):
          "id_firebase": idUser,
          "type":typeExercice,
          "time":time,
+         "nbRepetition":nbRepetition,
           "date": datetime.utcnow()
           }
     collectionExercice.insert_one(exercice).inserted_id
