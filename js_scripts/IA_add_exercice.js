@@ -4,7 +4,7 @@ var firebase = require("firebase");
 var fs    = require('fs');
 var util  = require('util');
 var MongoClient = require("mongodb").MongoClient;
-var tools = require('./utilsMongoDB');
+// var tools = require('./utilsMongoDB');
 var mongodb = require('mongodb');
 var ObjectId = mongodb.ObjectID;
 
